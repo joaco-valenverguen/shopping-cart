@@ -9,6 +9,10 @@ let cart = {};
 
 document.addEventListener("DOMContentLoaded", () => {
   get();
+  if (localStorage.getItem("cart")) {
+    cart = JSON.parse(localStorage.getItem("cart"));
+    printCart();
+  }
 });
 
 cards.addEventListener("click", (e) => {
@@ -84,7 +88,7 @@ const printCart = () => {
     fragment.appendChild(clone);
   });
   item.appendChild(fragment);
-
+  localStorage.setItem("cart", JSON.stringify(cart));
   printFooter();
 };
 
@@ -119,4 +123,20 @@ const printFooter = () => {
 };
 function btnAccion(e) {
   console.log(e.target);
+  //Aumentar
+  if (e.target.classList.contains("btn-info")) {
+    const producto = cart[e.target.dataset.id];
+    producto.cantidad++;
+    cart[e.target.dataset.id] = { ...producto };
+    console.log(producto);
+  }
+  if (e.target.classList.contains("btn-danger")) {
+    const producto = cart[e.target.dataset.id];
+    producto.cantidad--;
+    if (producto.cantidad == 0) {
+      delete cart[e.target.dataset.id];
+    }
+  }
+
+  printCart();
 }
